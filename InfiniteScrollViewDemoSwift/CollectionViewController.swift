@@ -32,7 +32,7 @@ class CollectionViewController: UICollectionViewController {
         collectionView?.infiniteScrollIndicatorView = CustomInfiniteIndicator(frame: indicatorRect)
 
         // Set custom indicator margin
-        collectionView?.infiniteScrollIndicatorMargin = 40
+        collectionView?.infiniteScrollIndicatorMargin = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
 
         // Add infinite scroll handler
         collectionView?.addInfiniteScroll { [weak self] scrollView in

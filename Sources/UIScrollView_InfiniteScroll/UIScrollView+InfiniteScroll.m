@@ -102,7 +102,7 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
  *  Indicator view margin (top and bottom for vertical direction
  *  or left and right for horizontal direction)
  */
-@property (nonatomic) CGFloat indicatorMargin;
+@property (nonatomic) UIEdgeInsets indicatorMargin;
 
 /**
  *  Trigger offset.
@@ -145,7 +145,7 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
 #endif
 
     // Default row height (44) minus activity indicator height (22) / 2
-    _indicatorMargin = 11;
+    _indicatorMargin = UIEdgeInsetsMake(11, 11, 11, 11);
 
     _direction = InfiniteScrollDirectionVertical;
 
@@ -267,11 +267,11 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
     return self.pb_infiniteScrollState.indicatorView;
 }
 
-- (void)setInfiniteScrollIndicatorMargin:(CGFloat)infiniteScrollIndicatorMargin {
+- (void)setInfiniteScrollIndicatorMargin:(UIEdgeInsets)infiniteScrollIndicatorMargin {
     self.pb_infiniteScrollState.indicatorMargin = infiniteScrollIndicatorMargin;
 }
 
-- (CGFloat)infiniteScrollIndicatorMargin {
+- (UIEdgeInsets)infiniteScrollIndicatorMargin {
     return self.pb_infiniteScrollState.indicatorMargin;
 }
 
@@ -469,10 +469,10 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
 
     if (self.pb_infiniteScrollState.direction == InfiniteScrollDirectionVertical) {
         CGFloat indicatorHeight = CGRectGetHeight(activityIndicator.bounds);
-        return indicatorHeight + self.infiniteScrollIndicatorMargin * 2;
+        return indicatorHeight + self.infiniteScrollIndicatorMargin.top + self.infiniteScrollIndicatorMargin.bottom;
     } else {
         CGFloat indicatorWidth = CGRectGetWidth(activityIndicator.bounds);
-        return indicatorWidth + self.infiniteScrollIndicatorMargin * 2;
+        return indicatorWidth + self.infiniteScrollIndicatorMargin.left + self.infiniteScrollIndicatorMargin.right;
     }
 }
 
@@ -484,13 +484,14 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
 - (void)pb_positionInfiniteScrollIndicatorWithContentSize:(CGSize)contentSize {
     UIView *activityIndicator = [self pb_getOrCreateActivityIndicatorView];
     CGFloat contentLength = [self pb_clampContentSizeToFitVisibleBounds:contentSize];
-    CGFloat indicatorRowSize = [self pb_infiniteIndicatorRowSize];
 
     CGPoint center;
     if (self.pb_infiniteScrollState.direction == InfiniteScrollDirectionVertical) {
-        center = CGPointMake(contentSize.width * 0.5, contentLength + indicatorRowSize * 0.5);
+        CGFloat indicatorHeight = CGRectGetHeight(activityIndicator.bounds);
+        center = CGPointMake(contentSize.width * 0.5, contentLength + self.infiniteScrollIndicatorMargin.top + indicatorHeight * 0.5);
     } else {
-        center = CGPointMake(contentLength + indicatorRowSize * 0.5, contentSize.height * 0.5);
+        CGFloat indicatorWidth = CGRectGetWidth(activityIndicator.bounds);
+        center = CGPointMake(contentLength + self.infiniteScrollIndicatorMargin.left + indicatorWidth * 0.5, contentSize.height * 0.5);
     }
 
     if(!CGPointEqualToPoint(activityIndicator.center, center)) {

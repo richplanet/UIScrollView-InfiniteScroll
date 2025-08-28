@@ -65,7 +65,7 @@ typedef NS_ENUM(NSUInteger, InfiniteScrollDirection) {
 /**
  *  The margin from the scroll view content to the indicator view (Default: 11)
  */
-@property (nonatomic) CGFloat infiniteScrollIndicatorMargin;
+@property (nonatomic) UIEdgeInsets infiniteScrollIndicatorMargin;
 
 /**
  *  Set adjustment for scroll coordinate used to determine when to call handler block.
