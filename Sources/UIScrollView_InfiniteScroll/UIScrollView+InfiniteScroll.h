@@ -77,6 +77,12 @@ typedef NS_ENUM(NSUInteger, InfiniteScrollDirection) {
 @property (nonatomic) CGFloat infiniteScrollTriggerOffset;
 
 /**
+ *  RunLoop modes used to schedule infinite scroll handler.
+ *  Default: @[ NSRunLoopCommonModes ]
+ */
+@property (nonatomic, copy) NSArray<NSString *> *infiniteScrollRunLoopModes;
+
+/**
  *  Setup infinite scroll handler
  *
  *  @param handler a handler block

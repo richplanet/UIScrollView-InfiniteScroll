@@ -120,6 +120,12 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
  */
 @property (nonatomic, copy) BOOL(^shouldShowInfiniteScrollHandler)(id scrollView);
 
+/**
+ * RunLoop modes where infinite scroll handler will be scheduled.
+ * Defaults to @[ NSDefaultRunLoopMode ].
+ */
+@property (nonatomic, copy) NSArray<NSString *> *runLoopModes;
+
 @end
 
 @implementation _PBInfiniteScrollState
@@ -148,6 +154,9 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
     _indicatorMargin = UIEdgeInsetsMake(11, 11, 11, 11);
 
     _direction = InfiniteScrollDirectionVertical;
+
+    // 기본 RunLoop 모드
+    _runLoopModes = @[ NSDefaultRunLoopMode ];
 
     return self;
 }
@@ -288,6 +297,17 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
 
 - (void)setInfiniteScrollTriggerOffset:(CGFloat)infiniteScrollTriggerOffset {
     self.pb_infiniteScrollState.triggerOffset = fabs(infiniteScrollTriggerOffset);
+}
+
+- (NSArray<NSString *> *)infiniteScrollRunLoopModes {
+    return self.pb_infiniteScrollState.runLoopModes;
+}
+
+- (void)setInfiniteScrollRunLoopModes:(NSArray<NSString *> *)modes {
+    if (modes.count == 0) {
+        modes = @[ NSDefaultRunLoopMode ];
+    }
+    self.pb_infiniteScrollState.runLoopModes = [modes copy];
 }
 
 #pragma mark - Private dynamic properties
@@ -517,9 +537,7 @@ static const void *kPBInfiniteScrollStateKey = &kPBInfiniteScrollStateKey;
     // Only show the infinite scroll if it is allowed
     if([self pb_shouldShowInfiniteScroll]) {
         [self pb_startAnimatingInfiniteScroll:forceScroll];
-
-        // This will delay handler execution until scroll deceleration
-        [self performSelector:@selector(pb_callInfiniteScrollHandler) withObject:self afterDelay:0.1 inModes:@[ NSDefaultRunLoopMode ]];
+        [self performSelector:@selector(pb_callInfiniteScrollHandler) withObject:self afterDelay:0.1 inModes:state.runLoopModes];
     }
 }
 
